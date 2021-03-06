@@ -1,15 +1,16 @@
-import './App.css';
+import '../App.css';
 import React, { useState, useEffect } from 'react';
-import { Form, Card, Image, Icon, Grid } from 'semantic-ui-react'
+import { Form, Image, Grid } from 'semantic-ui-react'
+import { Link } from "react-router-dom";
 
-function App() {
+function List() {
   const [name, setName] = useState('');
   const [userName, setuserName] = useState('');
   const [followers, setFollowers] = useState('');
   const [following, setFollowing] = useState('');
   const [repos, setRepos] = useState('');
   const [avatar, setAvatar] = useState('');
-  const [userInput, setUserInput] = useState('');
+  // const [userInput, setUserInput] = useState('');
   const [error, setError] = useState(null);
   const [email, setEmail] = useState('');
   const [location, setLocation] = useState('');
@@ -33,7 +34,7 @@ function App() {
     avatar_url,
     email,
     location,
-    created_at
+    created_at,
   }) => {
     setName(name);
     setuserName(login);
@@ -45,17 +46,9 @@ function App() {
     setLocation(location);
     setJoinDate(created_at);
   };
-
-  const handleSearch = (e) => {
-    console.log('e', e)
-    setUserInput(e.target.value)
-    handleSubmit()
-  }
   
   const handleSubmit = (e) => {
-    console.log('e', e)
-    console.log('userInput', userInput)
-    fetch(`https://api.github.com/users/${userInput}`)
+    fetch(`https://api.github.com/users/${e.target.value}`)
       .then(res => res.json())
       .then(data => {
         if (data.message) {
@@ -69,7 +62,6 @@ function App() {
 
   return (
     <div>
-      <div className='navbar'>Github Search</div>
       <div className='search'>
         <Form >            
           <Form.Group>
@@ -83,60 +75,29 @@ function App() {
         </Form>
       </div>
       { error ? (<h1>{error}</h1>) : (
+        
         <div className='card'>
+          <Link to='/user-profile'>
+            <Grid  celled='internally' columns={3} centered>
+              <Grid.Row>
+                <Grid.Column width={2}>
+                  <Image src={avatar} />
+                </Grid.Column>
+                <Grid.Column width={3}>
+                  <h1>{userName}</h1>
+                  <h1>{name}</h1>
+                </Grid.Column>
 
-          <Grid  celled='internally' columns={3} centered>
-            <Grid.Row>
-              <Grid.Column width={2}>
-                <Image src={avatar} />
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <h1>{userName}</h1>
-                <h1>{name}</h1>
-              </Grid.Column>
-
-              <Grid.Column width={3}>
-                <h1>Repo:{repos}</h1>
-              </Grid.Column>
-             
-
-            </Grid.Row>
-
-          </Grid>
-
-          
+                <Grid.Column width={3}>
+                  <h1>Repo:{repos}</h1>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Link>
         </div>
       )};
-
-    <div className = "user_profile">
-        <Grid>
-          <Grid.Column width={2}>
-            <Image src= {avatar} />
-          </Grid.Column>
-          <Grid.Column width={3}>
-            <h2>
-              User Name: {userName}</h2>
-            <h2>
-              Email: {email}
-            </h2>
-            <h2>
-              Location: {location}
-            </h2>
-            <h2>
-              Join Date: {joinDate}
-            </h2>
-            <h2>
-              {followers} Followers
-            </h2>
-            <h2>
-              Folowing {following}
-            </h2>
-          </Grid.Column>
-        </Grid>
-    </div>
-
   </div>
   )
 }
 
-export default App;
+export default List;
